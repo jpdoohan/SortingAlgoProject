@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class TestProject4 {
-    static int menuStatus = 0;
+    static int menuStatus = 1;
     static int dataSize = 0;
     static boolean unsorted = true;
     static int size = 1000;
@@ -139,7 +139,7 @@ public class TestProject4 {
     public static void menu() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("-Sorting Algorithm Analysis-");
-        System.out.println("Select sorting type:\n1. For selection sort.\n2. For Quick sort.\n3. For Merge Sort.\n4. For All\n-1. Exit.");
+        System.out.println("Select sorting type:\n1. For Insertion sort.\n2. For Bubble sort.\n3. For Merge Sort.\n4. For All\n-1. Exit.");
         menuStatus = scanner.nextInt();
         if (menuStatus != -1) {
             System.out.println("---");
@@ -153,7 +153,6 @@ public class TestProject4 {
                 if (response != -1) {
                     setSortedOrUnsorted(response);
                 }
-                menuStatus = 1;
             }
         }
     }
@@ -161,26 +160,20 @@ public class TestProject4 {
     //set datasize
     public static void setDataSize(int userInput) {
         if(userInput ==1) {
-        size = 10;
-        limit = 1000;
-        increment = 10;
-    }
-        else if(dataSize ==2)
-    {
         size = 1000;
         limit = 10000;
         increment = 100;
     }
-        else if(dataSize ==3)
+        else if(userInput ==2)
     {
         size = 10000;
         limit = 100000;
         increment = 1000;
     }
-        else if(dataSize == 5)
+        else if(userInput ==3)
     {
-        size = 10000;
-        limit = 750000;
+        size = 100000;
+        limit = 1000000;
         increment = 10000;
     }
         else if(dataSize ==-1)
@@ -214,7 +207,7 @@ public class TestProject4 {
         }
     }
 
-    public static void sortingMethod(ArrayList<Long> pResults,ArrayList <Integer> pSizeOfArray, SelectionSort pSort) {
+    public static void sortingMethod(ArrayList<Long> pResults,ArrayList <Integer> pSizeOfArray, InsertionSort pSort) {
         //SetUp
         long timeTaken = 0;
         long timeAfter = 0;
@@ -228,12 +221,12 @@ public class TestProject4 {
             sortedOrUnsortedMechanism(numArray);
 
             //duplicates so each sort is on the same data
-            int[] selectionArray = new int[size];
-            selectionArray = numArray;
+            int[] insertionArray = new int[size];
+            insertionArray = numArray;
 
-            //SelectionSort
+            //InsertionSort
             timeBefore = System.nanoTime();
-            pSort.doSort(selectionArray);
+            pSort.doSort(insertionArray);
             timeAfter = System.nanoTime();
             timeTaken = timeAfter - timeBefore;
             pResults.add(timeTaken);
@@ -300,12 +293,12 @@ public class TestProject4 {
 
             //increase size
             pSizeOfArray.add(size);
-            System.out.println(size);
+            System.out.println("Loading..." + size);
         }
     }
 
-    public static void sortingMethod(BubbleSort pBubbleSort, SelectionSort pSelectionSort, MergeSort pMergeSort,
-                                     ArrayList<Long> pBubbleResults,ArrayList<Long> pSelectionResults,ArrayList<Long> pMergeResults,
+    public static void sortingMethod(BubbleSort pBubbleSort, InsertionSort pInsertionSort, MergeSort pMergeSort,
+                                     ArrayList<Long> pBubbleResults,ArrayList<Long> pInsertionResults,ArrayList<Long> pMergeResults,
                                      ArrayList <Integer> pSizeOfArray) {
         //SetUp
         long timeTaken = 0;
@@ -313,25 +306,32 @@ public class TestProject4 {
         long timeBefore = 0;
 
         //loop
-        for (int i = size; i < limit; i = i + increment) {
+        for (int i = size; size < limit; size = size + increment) {
             //base case
             int[] numArray = new int[size];
             sortedOrUnsortedMechanism(numArray);
 
             //duplicates so each sort is on the same data
-            int[] selectionArray = new int[size];
-            selectionArray = numArray;
-            int[] mergeArray = new int[size];
-            mergeArray = numArray;
             int[] bubbleArray = new int[size];
             bubbleArray = numArray;
+            int[] insertionArray = new int[size];
+            insertionArray = numArray;
+            int[] mergeArray = new int[size];
+            mergeArray = numArray;
 
-            //SelectionSort
+            //BubbleSort
             timeBefore = System.nanoTime();
-            pSelectionSort.doSort(selectionArray);
+            pBubbleSort.doSort(bubbleArray);
             timeAfter = System.nanoTime();
             timeTaken = timeAfter - timeBefore;
-            pSelectionResults.add(timeTaken);
+            pBubbleResults.add(timeTaken);
+
+            //insertionSort
+            timeBefore = System.nanoTime();
+            pInsertionSort.doSort(insertionArray);
+            timeAfter = System.nanoTime();
+            timeTaken = timeAfter - timeBefore;
+            pInsertionResults.add(timeTaken);
 
             //MergeSort
             timeBefore = System.nanoTime();
@@ -340,16 +340,10 @@ public class TestProject4 {
             timeTaken = timeAfter - timeBefore;
             pMergeResults.add(timeTaken);
 
-            //QuickSort
-            timeBefore = System.nanoTime();
-            pBubbleSort.doSort(bubbleArray);
-            timeAfter = System.nanoTime();
-            timeTaken = timeAfter - timeBefore;
-            pBubbleResults.add(timeTaken);
-
-            //increase size
+            //add size of array to size array
             pSizeOfArray.add(size);
-            System.out.println(size);
+            System.out.println(" Loading..." + size);
+
         }
     }
 
@@ -363,14 +357,14 @@ public class TestProject4 {
         writeSizeToCSV(pSizeOfArray, filename);
     }
 
-    public static void writeFiles(ArrayList<Long> pBubbleResults, ArrayList<Long> pSelectionResults,ArrayList<Long> pMergeResults, ArrayList <Integer> pSizeOfArray) {
+    public static void writeFiles(ArrayList<Long> pBubbleResults, ArrayList<Long> pInsertionResults,ArrayList<Long> pMergeResults, ArrayList <Integer> pSizeOfArray) {
         String filename;
         filename = "bubbleResults";
         createCSV(filename);
         writeArrayListToCSV(pBubbleResults, filename);
-        filename = "selectionResults";
+        filename = "insertionResults";
         createCSV(filename);
-        writeArrayListToCSV(pSelectionResults, filename);
+        writeArrayListToCSV(pInsertionResults, filename);
         filename = "mergeResults";
         createCSV(filename);
         writeArrayListToCSV(pMergeResults, filename);
@@ -391,26 +385,26 @@ public class TestProject4 {
         String filename = "selectionResults";
 
         //storage of results -ArrayList makes this computationally more expensive-replace with arrays
-        ArrayList<Long> selectionResults = new ArrayList<>();
+        ArrayList<Long> insertionResults = new ArrayList<>();
         ArrayList<Long> mergeResults = new ArrayList<>();
         ArrayList<Long> bubbleResults = new ArrayList<>();
         ArrayList<Integer> sizeOfArray = new ArrayList<>();
 
         //objects
         BubbleSort bubbleSort = new BubbleSort();
-        SelectionSort selectionSort = new SelectionSort();
+        InsertionSort insertionSort = new InsertionSort();
         MergeSort mergeSort = new MergeSort();
 
 
         //Program runs -- user control
-        while (menuStatus == 0) {
+        while (menuStatus != -1) {
             menu();
             //algo type
             if (menuStatus == 1) {
                 //loop
-                sortingMethod(selectionResults, sizeOfArray, selectionSort);
-                filename = "selectionSort";
-                writeFiles(filename, selectionResults, sizeOfArray);
+                sortingMethod(insertionResults, sizeOfArray, insertionSort);
+                filename = "insertionSort";
+                writeFiles(filename, insertionResults, sizeOfArray);
             } else if (menuStatus == 2) {
                 //loop
                 sortingMethod(bubbleResults, sizeOfArray, bubbleSort);
@@ -424,8 +418,8 @@ public class TestProject4 {
 
             } else if (menuStatus == 4) {
                 //loop
-                sortingMethod(bubbleSort, selectionSort,mergeSort,selectionResults,mergeResults,bubbleResults,sizeOfArray);
-                writeFiles(bubbleResults,selectionResults,mergeResults,sizeOfArray);
+                sortingMethod(bubbleSort, insertionSort,mergeSort,insertionResults,mergeResults,bubbleResults,sizeOfArray);
+                writeFiles(bubbleResults,insertionResults,mergeResults,sizeOfArray);
 
             } else if (menuStatus == -1) {
                 System.out.println("Thank you for using\n-Sorting Algorithm Analysis-");
@@ -433,8 +427,11 @@ public class TestProject4 {
             } else {
                 System.out.println("Input incorrect, please choose 1,2,3 or 4.");
             }
-            menuStatus = 0;
+            System.out.println("---");
         }
     }
 }
+
+//Divide one result by the other to get ratio
+//when ratio goes 0 = inflection spot
 
